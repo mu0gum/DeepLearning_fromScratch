@@ -153,10 +153,38 @@
  - **전체 항목이 정렬되지 않은 키와 값의 쌍으로 구성된 집합**
  - keys(), sorted(), values() 등 함수 존재
 
+### 제어문과 자료구조의 조합(Comprehensions)
+ - 파이썬은 문법들간의 조합을 통해 다소 복잡할 수 있는 소스 코드를 쉽고 간결하게 만들어 줌
 
-
-
-
+```python3
+ squares = []
+ for x in range(10):
+  squares.appned(x**2)
  
+ # [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+ # 위 내용을 간단히 표현하면
  
+ new_squares = [ y**2 for y in range(10) ]
+ # [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
  
+ # 위의 예시에서 x는 마지막 루프의 값이었던 9를 보유한 채 변수가 프로그램 내에 남아있음
+ # 임시로 사용했던 변수임에도 메모리 내에 상주
+ # 반면에 y는 메모리를 반환
+```
+ 
+ - 아래와 같이 조금 더 복잡한 표현도 가능
+ 
+ ```python3
+  pairs = []
+  A = ['blue', 'yellow', 'red']
+  B = ['red', 'green', 'blue']
+  
+  for a in A:
+   for b in B:
+    if a != b:
+     pairs.append( (a, b) )
+ 
+  # 위 for문을 아래와 같이 표현 가능
+  new_pairs = [ (a, b) for a in A for b in B if a != b ]
+ ```
+
