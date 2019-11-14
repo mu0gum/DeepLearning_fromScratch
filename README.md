@@ -188,3 +188,38 @@
   new_pairs = [ (a, b) for a in A for b in B if a != b ]
  ```
 
+### 함수 정의하기
+ - 함수를 만들기 위해 사용하는 예약어는 def
+ - 함수명에는 파이썬의 예약어를 사용할 수 없음
+ - 함수 종료 시에 반환 값이 있는 경우 return 예약어 사용
+
+```python3
+# 기본 인자 값 활용
+# 함수 호출 시에 매개 변수를 넘기지 않으면 error 발생
+def daily_sleeping_hours(hours):
+ return hours
+
+# 매개 변수를 표기할 때 아래와 같이 기본값을 줄 수 있음
+def daily_sleeping_hours(hours=7):
+ return hours
+
+# 여러 개의 인자 값 및 키워드 인자 활용
+# 함수 호출 시 반드시 대입해야 하는 필수 인자 값이 있고, 값을 대입하지 않는 경우 기본값을 할당하는 옵션 인자 값이 있음
+# 두 타입의 인자 값이 공존하는 형태의 함수를 정희할 수 있고 이를 'positional-or-keyword'라고 부름
+# 아래 함수는 첫 번째 인자 값은 필수, 나머지는 옵션으로 입력하지 않을 경우 기본값이 할당
+def introduce_my_car(manufacture, seats=4, type='sedan'):
+ print('내 차는', manufacture, '의', seats, '인승', type, '이다.')
+
+# 키워드 인자 값 뒤에 키워드 없는 인자 값 사용 불가
+>>> introduce_my_car(manufacture='현대',2) # SyntaxError
+
+# 동일 매개 변수에 중복 인자 값 대입
+>>> introduce_my_car('기아', manufacture='현대') # TypeError
+
+# 알지 못하는 키워드
+>>> introduce_my_car(color='회색') # TypeError
+```
+ 
+### 가변 인자 리스트 활용(Arbitary Argument Lists) 
+ 
+ 
