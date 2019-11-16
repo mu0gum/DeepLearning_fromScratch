@@ -221,5 +221,77 @@ def introduce_my_car(manufacture, seats=4, type='sedan'):
 ```
  
 ### 가변 인자 리스트 활용(Arbitary Argument Lists) 
+ - 인자 값 여러 개를 하나의 변수에 담아서 전달하고자 한다면 별표 기호를 활용하면 가능
+ - 별표 한 개는 튜플 타입, 두 개는 딕셔너리 타입 데이터를 의미
+```python3
+ def introduce_your_family(name, *family_names, **family_info):
+  for family_name in family_names:
+   print(family_name)
+  
+  for key in family_info.keys():
+   print(key, ':', family_info[key])
+
+# 인자 값의 개수나 키워드 없이도 나열한 값이 알아서 각 변수에 패킹되어 대입 -> var-positional
+>>> introduce_your_family('Chris', 'Jihee', 'Anna', 'Shinhoo', 집='용인', 가훈='행복하게 살자')
+```
+ - 열거형 데이터를 집어 넣을 때 튜플을 사용하는 이유는 튜플은 값을 변경할 수 없는(immutable) 데이터 타입이기 때문
+ - 개발 시 발생할 수 있는 혼돈을 줄이는 데 기여
  
+### 언패킹 인자 리스트 활용
+
+```python3
+# 일반적으로 값을 2개 따로 대입
+>>> list(range(3, 6))
+[3, 4, 5]
+
+# 리스트 타입 데이터를 언패킹하여 대입
+>>> args = [3, 6]
+list(range(*args))
+[3, 4, 5]
+```
+ -	&#42;args를 통해 하나의 리스트 타입 데이터가 두 개의 숫자인 3과 6으로 나눠짐
+ - **파이썬에서의 별표 기호는 데이터를 패킹할지, 언패킹 할지를 결정해 주는 역할을 함**
+ - 매개 변수에 있는 별표 기호는 인자값으로 들어오는 항목들을 패킹하겠다는 의미, 인자 값에 있는 별표는 인자 값을 언패킹 하여 대입 하겠다는 의미
+ - 딕셔너리 타입을 위한 언패킹은 별표 기호 두개(&#42;&#42;)를 사용
  
+### 변수의 유효 범위(scope)
+ - 대부분 프로그래밍 언어에는 **변수를 사용할 때 해당 변수가 영향을 미치는 영역**이 존재
+ - 이 영역을 변수의 유효 범위(scope)라고 함
+ - 함수에 선언한 변수는 일반적으로 함수 내에서만 사용이 가능하며 함수 밖에서는 사용에 제약이 있음
+ 
+```python3
+ def my_func(param):
+  param = 'Modified by my_func'
+  print(param)
+  print(id(param))
+
+>>> param = 'Create from outside'
+>>> my_func(param)
+
+Modified by my_func
+60492296
+
+>>> print(param)
+
+Create from outside
+60492368
+```
+ 
+ - 위 코드의 2번째 줄에서 param 매개 변수의 값을 변경하는 것이 아니라 함수 내애서만 사용이 가능한 param 변수를 새로 생성
+ - 함수 내에서만 활용이 가능한 변수를 지역 변수(Local Variable)이라고 함
+ - 함수 밖에서 선언한 변수를 함수 내에서 활용하고 싶을 때는 global 예약어를 사용
+
+### 함수 설명을 위한 문자열 활용
+```python3
+ def my_function():
+  """아무 것도 하지 않지만, 문서만 기술한 함수
+  
+  
+  """
+  pass
+
+# __doc__ : 파이썬의 함수에서 docstring을 기술하면 자동으로 해당 내용을 호출할 수 있게 해주는 내장 변수
+>>> prnit(my_function.__doc__)
+
+아무 것도 하지 않지만, 문서만 기술한 함수 
+```
