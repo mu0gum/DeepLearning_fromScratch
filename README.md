@@ -295,3 +295,102 @@ Create from outside
 
 아무 것도 하지 않지만, 문서만 기술한 함수 
 ```
+
+### 클래스
+ - 파이썬의 모든 것은 객체로 이루어져 있으며 클래스는 이객체를 만들기 위한 일종의 명세
+
+```python3
+>>> var = '파이썬 객체 지향 이야기'
+>>> id(var)
+6070164
+>>> type(var)
+<class 'str'>
+
+# str 확인
+>>> str 
+<class 'str'>
+# str의 타입 확인
+>>> type(str)
+<class 'type'>
+# str의 식별자 확인
+>>> id(str)
+1741994512
+```
+ - 클래스 역시 파이썬에서는 하나의 객체
+ - 'str'이라는 클래스는 파이썬의 'type'이라는 클래스의 객체
+ - 'type'클래스 역시 'type'이라는 클래스의 객체
+ - 클래스에서 생성된 객체를 인스턴스라고 함
+ - 클래스에는 객체의 상태 및 행동을 정의하는 지역 변수인 속성과 내장 함수인 메소드가 존재
+
+```python3
+# 어떤 클래스(타입)에 의해 생성이 되었는지를 담고 있는 지역 변수
+>>> var.__class__ 
+<class 'str'>
+# 문자열 타입 클래스에 내장되어 있는 함수
+>>> var.replace('파이썬', 'Python')
+'Python 객체 지향 이야기'
+```
+ - 클래스에 속해 있는 지역 변수를 속성이라고 함
+ - 클래스에 속해 있는 내장 함수는 메소드라고 함
+
+### 클래스 정의 및 불러 오기
+```python3
+ class BookReader:
+  name = str()
+  
+  # self -> 본인의 객체를 인자 값으로 넘김으로써 함수 내에서 클래스의 속성 및 메소드에 접근할 수 있게 해 줌
+  def read_book(self):
+   print(self.name  + ' is reading Book!')
+ 
+```
+
+### 클래스 초기화 함수 __init()__ 재정의
+ - 위의 소스 코드에서 이름이 없는 사람을 만들 필요는 없어 보여 인스턴스 생성시에 반드시 이름을 인자 값으로 집어넣게 하고 싶음
+ - 이럴 때를 위해 객체 인스턴스화를 위한 특수 함수가 존재 -> __init()__
+
+```python3
+ class BookReader:
+ 
+  # 초기화 함수 재정의(Overriding)
+  def __init__(self, name):
+   self.name = name
+  
+  def read_book(self):
+   print(self.name  + ' is reading Book!')
+   
+# 아래와 같이 인자값이 없는 경우 에러 발생
+>>> reader = BookReader()
+
+# 객체 생성
+>>> reader = BookReader('Chris')
+>>> reader.read_book()
+Chris is reading Book!
+```
+
+### 클래스 변수와 인스턴스 변수
+ - 변수 선언 위치에 따라 유효 범위가 달라짐
+ 
+```python3
+class BookReader:
+ country = 'South Korea'
+ def __init__(self, name):
+  self.name = name
+ def read_book():
+  print(self.name  + ' is reading Book!')
+  
+  
+>>> reader1 = BookReader('Chris')
+>>> reader2 = BookReader('Anna')
+>>> reader1.country
+'South Korea'
+>>> reader2.country
+'South Korea'
+>>> reader1.read_book()
+'Chris is reading Book!'
+>>> reader2.read_book()
+'Anna is reading Book!'
+```
+ - country 처럼 클래스에 선언된 속성은 클래스 변수라고 하며 이 클래스에 의해 생성된 모든 객체가 인스턴스화되는 시점에 같은 값을 조회할 때 사용 가능
+ - 반면 name은 클래스의 변수 형태로 선언한 것이 아니고, 객체가 인스턴스화 될 때마다 새로운 값이 할당되어 서로 다른 객체 간에는 값을 공유할 수 없음. 이런 변수를 인스턴스 변수라고 함 => 객체 단위로 변경이 되는 변수는 반드시 인스턴스 변수로 선언하여 사용
+ - 클래스 변수에 변할 수 없는(immutable) 데이터 타입(예: 문자열 타입)을 쓰는 경우에도 새로 변경한 값을 다른 객체가 공유할 수 있을까? => 없다(변할 수 없는 데이터 타입은 변경을 시도하는 순간 새로운 객체가 생성되고 이 객체는 변수를 가지고 있는 객체 내에서만 접근 가능)
+ 
