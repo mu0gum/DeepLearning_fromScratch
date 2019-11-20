@@ -122,7 +122,7 @@
  - 파이썬의 문자열 타입 데이터는 자동으로 각 글자에 색인이 매겨짐 => 문자열은 Immutable이기 때문에 글자[0] = 'a' 처럼 변경 불가
  
 ### 튜플 타입
- - **변경할 수 없는(Immutable) 리스트 타입'
+ - **변경할 수 없는(Immutable) 리스트 타입**
  - 리스트 타입은 일반적으로 동일한 데이터 타입으로 이루어진 항목을 리스트 내에서 순차적으로 추출하는 용도로 사용
  - 튜플 타입은 서로 다른 종류의 데이터 타입으로 이루어진 항목들을 변수에 바로 풀어 쓰는 언패킹 혹은 색인을 매기는 용도로 사용
 ```python3
@@ -446,9 +446,107 @@ class BookReader:
  - 객체 지향 언어에서의 상속은 말 그대로 부모 클래스가 자식 클래스에게 무언가를 물려 주는 것
  - 파이썬에서는 부모 클래스를 베이스 클래스(Base Class), 자식 클래스는 파생 클래스(Derived Class)라고 부름
  - **상속은 중복 코드를 최소화 함과 동시에 클래스 간의 계층 관계를 형성하여, 현실 세계와의 괴리를 줄이기 위해서 나온 개념이라고 볼 수 있음**
+
+```python3
+# Human 클래스 선언
+class Human:
  
+ # 클래스 변수 country 선언
+ country = 'South  Korea'
  
+ # 초기화 함수 재정의
+ def __init__(self, name):
+  self.name = name
+  
+# Human의 자식 클래스인 BookReader 클래스 선언
+class BookReader(Human):
+ def read_book(self):
+  print(self.name + ' is reading book.'
+  
+# Human의 자식 클래스인 DrumPlayer 클래스 선언
+class DrumPlay(Human):
+ def play_drum(self):
+  print(self.name + ' is playing drum.'
+  
+
+>>> br = BookReader('Chris')
+>>> br.country
+'South korea'
+
+>>> br.read_book()
+'Chris is reading book.'
+
+>>> dp = DrumPlayer('Sean')
+>>> dp.country
+'South Korea'
+
+>>> dp.play_drum()
+'Sean is playing drum.'
+```
  
+ - 자식 클래스는 생성할 때 부모 클래스를 선언해 줘야 함 > 클래스 명 뒤에 중괄호 기호를 활용하여 부모 클래스 명을 넣음
+ - BookReader 내부에서는 __init__() 함수가 재정의되지 않았지만 부모 캘르시인 Human으로부터 재정의 된 __init()__ 함수를 물려받아 사용
+ - 상속은 코드의 재사용성을 높이고 중복되는 소스 코드를 줄이는 데 크게 기여
+ - 클래스인지 인스턴스인지를 확인하려면 __class__ 속성 값을 확인. 부모 클래스인 베이스 클래스를 확인하기 위해서는 __bases__ 속성 값 확인
+ - 모든 클래스의 부모 클래스는 object 클래스
  
+```python3
+>>> Human.__bases__
+(<class 'object'>,)
+```
  
+ - 부모 클래스 호출시 base의 복수형인 bases를 사용하고 있고, 결과 값에는 튜플 타입에 마지막에 쉼표가 붙어 있음 > 이는 부모 클래스가 한 개가 아닌 여러 개가 될 수도 있는 것임을 암시
+
+```python3
+# Developer 부모 클래스 선언
+class Developer:
+ # coding 메소드 선언
+ def coding():
+  print(self.name + ' is developer.')
+
+class ProgramBookWriter(Human, Developer):
+ def write_book(self):
+  print(self.name + ' is writing book')
+```
  
+ - 위 처럼 여러 클래스를 하나의 자식 클래스가 상속 받는 것을 다중 상속이라고 함 > 다중 상속은 모든 프로그래밍 언어가 제공하는 것은 아님 ( C++은 가능, 자바는 불가능 등)
+
+
+### 다형성(polymorphism)
+ - 부모 클래스와 동일한 이름의 메소드를 그대로 자식 클래스에서 구현하여 재정의(Overriding)하는 것을 다형성(polymorphism)의 구현이라고 함
+ 
+```python3
+# Developer 부모 클래스 선언
+class Developer:
+ # 초기화 시 name을 받기 위한 재정의
+ def __init__(self, name):
+  self.name = name
+ 
+ # coding 메소드 선언
+ def coding(self):
+  print(self.name + ' is developer')
+
+class PythonDeveloper(Developer):
+ def coding(self):
+  print(self.name + ' is Python Developer.')
+
+class JavaDeveloper(Developer):
+ def coding(self):
+  print(self.name + ' is Java Developer')
+```
+ 
+ - 다형성 역시 객체 지향의 중요한 특성 중 하나
+ - 다형성의 구현을 위하여 부모 클래스에 있는 메소드를 재정의하고 나면 부모 클래스의 메소드는 실행이 되지 않음
+ - 하지만 어떤 경우에는 부모 클래스의 메소드에 덧붙여서 소스 코드를 확장하고 싶은 경우도 분명 생김
+ - 이 때, 부모 클래스 내용을 Copy & Paste 하는 것은 또 다른 소스 코드 중복을 야기할 수 있음
+ - 이런 경우를 위하여 파이썬은 부모 클래스 호출을 위해 super()라는 함수를 제공
+
+```python3
+# CPPDeveloper 부모 클래스 선언
+class CPPDeveloper(Developer):
+ def coding(self):
+  super().coding()
+  print(self.name + ' is C++ Developer.')
+```
+
+ - 이런 식의 super() 클래스 호출은 초기화 함수 호출시에도 많이 사용
