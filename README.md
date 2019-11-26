@@ -622,7 +622,54 @@ def fb2(n):
  - 패키지는 관련 깊은 소스코들을 모아서 알아보기 쉽게 하고, 관리 및 유지보수 역시 쉽게 하기 위함
  - 일반적으로 패키지를 나눌 때에는 소스 코드의 사용 목적에 따라서 나누는 것이 현명
  - from 문과 import 문이 함께 사용하는 경우 import 문은 뒤의 항목은 패키지의 서브 모듈이나 서브 패키지, 패키지 내에 구현되어 있는 함수나 클래스, 변수 등이 올 수 있음. 또한 from 문 없이 사용하는 경우에는 마지막 항목이 모듈이나 패키지가 되어야 
+
+
+### 포맷을 위한 문자열 타입 메소드 format()
+ - 표준 출력문의 형태는 무척이나 다양하고, 출력되는 내용들은 소스 코드를 작성하는 개발자나 사용자에게 친숙하면서도 보기 좋아야 할 것
+ - format()의 활용
  
+```python3
+# 문자열 중간의 중괄호 기호({})는 문자열 타입 메소드인 format() 함수와 함께 사용
+>>> print('Hello, {}!'.format('Chris')) # str.format() 사용 예제
+Hello, Chris!
+
+>>> name = input('이름을 입력하세요! ')
+이름을 입력하세요! Chris
+>>> job = input('직업을 입력하세요! ')
+직업을 입력하세요! Programmer
+>>> print('{} is a {}.'.format(name, job))
+Chris is a Programmer.
+
+# 중괄호 안에 인자 값의 인덱스(순서)가 들어 갈 수 있음
+>>> print({0} is a {1}.'.format(name, job))
+Chris is a Programmer.
+
+# 인자 값의 순서를 바꿔서 출력하고 싶은 경우에는 아래와 같이 바꾸는 것도 가능
+>>> print('Good {1}. {0}.'.format(name, job))
+Good Programmer. Chris.
+
+# 정수 타입 인덱스뿐만 아니라 변수명을 활용하여 표현하는 방법도 있음
+>>> print('Good {j}. {n}.'.format(n=name, j=job))
+Good Programmer. Chris.
+
+# 인덱스 형과 변수명을 함께 사용할 수도 있음
+>>> print({0} is a {lang} {1}.'.format(name, job, lang='Python')
+Chris is a Python Programmer.
+```
  
- 
- 
+### 다양한 포맷에 대한 예제
+ - 문자열이나 튜플, 리스트 형 데이터들을 자동으로 언패킹하여 값을 출력할 수 있음
+ - format()의 인자 값으로 대입할 때 별표 기호를 앞에 붙여 주면 됨
+
+```python3
+>>> '{0}-{1}-{2}'.format(*'ABC')
+'A-B-C'
+>>> '{0}-{1}-{2}'.format(*['A', 'B', 'C'])
+'A-B-C'
+
+# 인자 값의 색인과 중괄호 기호([])를 활용하여 튜플이나 리스트, 사전 형의 항목을 추출할 수 있음
+>>> '{0[0]}-{0[1]}-{0[2]}'.format(['A', 'B', 'C']) # 리스트 타입 예제
+'A-B-C'
+>>> '{0[name]}'.format({'name':'Chris', 'family-name':'Cho'}) # 사전 타입 예제
+'Chris'
+```
