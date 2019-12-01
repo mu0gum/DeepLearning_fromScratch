@@ -791,10 +791,77 @@ logger.critical('시스템이 다운됩니다!!') # CRITICAL 로그 출력
  - 퍼센트 기호(%)로 시작하여 괄호 안에 특정 항목 값이 보이고, 괄호 뒤에 소문자 s가 보이는 문자들로 이루어져 있음
  - 퍼센트 기호는 일종의 특수 기호로 로그 레코드의 속성들을 호출하겠다는 의미
  
-# 로그 레벨 설정에 관한 팁
+### 로그 레벨 설정에 관한 팁
  - 로그 레벨은 root 로거나 특정 로거, 핸들러 등에 모두 설정이 가능하여 다소 혼란스러움. 아래와 같은 방법 권유
  1) root 로거의 로그 레벨은 기본 값을 DEBUG나 NOTEST로 세팅하여 모든 로그를 출력할 수 있게 설정
  2) 로그 레벨을 제어하고 싶은 단위로 로거를 생성. 대부분 모듈이나 패키지 단위로 작성. 로그 레벨은 로거에 직접 설정
  3) 핸들러는 콘솔이나 파일에 로그를 출력하고, 로거들이 공유할 수 있기 때문에 핸들러에는 로그 레벨 설정을 하지 않음. 이는 곧 기본값인 NOTEST로 세팅을 한다는 의미. 그리고 원하는 로거에 추가하여 로거에 세팅되어 있는 로그 레벨을 따라 가게 함.
  
+### 설정 파일을 활용한 로깅
+ - 파이썬에서 자체적으로 정의한 '파일 설정(FileConfig)' 파일을 생성 > 소스코드와 동일한 위치에 저장
+ - 확장자는 보통 conf, ini, properties 등으로 설정
+ 
+```python3
+# logging.conf
+[loggers]
+key=root, infoLogger
+
+[handlers]
+keys=simpleHandler
+
+[formatter]
+keys=simpleFormatter
+
+[logger_root]
+level=NOTEST
+handlers=
+
+[logger_infoLogger]
+level=INFO
+handlers=simpleHandler
+qualname=__name__
+propagate=1
+
+[handler_simpleHandler]
+class=StreamHandler
+formatter=simpleFormatter
+args=(sys.stdout,)
+
+[formatter_simpleFormatter]
+format=%(asctime)s - %(name)s - %(levelname)-8s - %(message)s
+datefmt=
+```
+ - 1~8번째 라인까지는 파일에서 설정할 로거와 핸들러, 포매터의 이름을 설정
+ - 대괄호 기호, keys라는 용어는 약속된 양식이기 때문에 지켜야 함
+ - root는 모든 로거의 부모이므로 반드시 기술되어야 함
+
+```python3
+import logging # 로깅 모듈 탑재
+import logging.config # 로깅 설정 모듈 탑재
+
+# 설정 파일 읽어 오기
+logging.config.fileConfig('logging.conf')
+
+# 로거 생성
+logger = logging.getLogger(__name__) # 로거 생성
+
+# 로그 메세지 출력
+logger.debug('이 메세지는 개발자만 이해해요.') # DEBUG 로그 출력
+logger.info('생각대로 동작하고 있어요.') # INFO 로그 출력
+logger.warn('곧 문제가 생길 가능성이 있습니다.') # WARNING 로그 출력
+logger.error('문제가 생겼어요. 기능이 동작 안해요.') # ERROR 로그 출력
+logger.critical('시스템이 다운됩니다!!') # CRITICAL 로그 출력
+```
+ - 위 처럼 설정할 경우 소스 코드가 변경될 가능성을 줄이고, 설정 부분이 변경되면 소스 코드 수정 없이 설정 파일의 값만 수정하면 됨
+ - 위의 예제는 콘솔 화면에 출력하는 예제이고, 파일에 저장하기 위해서는 아래와 같이 파일 핸들러(FileHandler)
+ 
+```python3
+[handlers]
+keys=simpleHandler,fileHandler
+
+[handler_fileHandler]
+class=FileHandler
+formatter=simpleFormatter
+args=('python.log', 'w')
+```
  
