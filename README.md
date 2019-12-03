@@ -865,3 +865,109 @@ formatter=simpleFormatter
 args=('python.log', 'w')
 ```
  
+### 구문 에러(Syntax Error)
+ - 문법 오류로 인해 소스 코드를 실행 하기 전에 발생하는 에러
+ 
+```python3
+>>> print 'Hello, world!' # print() 함수의 괄호 누락 예시
+SyntaxError: Missing parentheses in call to 'print'
+
+>>> if 1 > 0 # : 누락 예시
+SyntaxError: Invalid syntax
+```
+
+### 예외(Exception)
+ - 소스 코드 실행 중에 에러가 발생하는 경우 이를 통칭해서 예외라고 함
+ - 파이썬은 다양한 유형의 에러를 미리 정해놓고, 데이터 타입과 같이 에러 타입을 정희함
+ - 파이썬에서 미리 정해 놓은 예외들을 Built-in Excceptions 라고 부름
+   (https://docs.python.org/3/library/exceptions.html#exception-hierarchy)
+ 
+### try-except 구문으로 예외 상황 제어하기
+```python3
+>>> def exception_test():
+     print("[1] Can you add 2 and '2' in python?")
+     print("[2] Try it~!", 2 + '2') # 예외 발생
+     print("[3] It's not possible to add integer and string together.")
+    
+>>> exception_test()
+[1] Can you add 2 and '2' in python?
+Traceback (most recent call last): # 에러 메세지
+...
+...
+```
+ - 파이썬에서는 에러 발생 시 추적이 가능한 정보들을 표기한에러 메세지를 트레이스백 메세지 라고 부름
+ - 소스 코드 실행 중 에러가 발생하면 프로그램은 중단되기 마련이고, 심각한 시스템 장애로 이어질 수 있음
+ - 파이썬에서는 이런 예외 상황에 대한 처리를 위하여 try ~ except문을 제공
+
+```python3
+>>> def exception_test():
+     print("[1] Can you add 2 and '2' in python?")
+     try: # try문
+      print("[2] Try it~!", 2 + '2') 
+     except TypeError as err: # 예외 처리 > TypeError가 발생하면 해당 인스턴스를 err 변수에 넣으라는 뜻
+      print('[2] TypeError : {}'.format(err)) 
+     print("[3] It's not possible to add integer and string together.")
+```
+ - 트레이스백 메세지를 출력하고 싶을 때는 traceback 모듈을 호출해야 함
+
+```python3
+>>> import traceback
+>>> def exception_test():
+     print("[1] Can you add 2 and '2' in python?")
+     try: # try문
+      print("[2] Try it~!", 2 + '2') 
+     except TypeError as err: # 예외 처리 > TypeError가 발생하면 해당 인스턴스를 err 변수에 넣으라는 뜻
+      print('[2] TypeError : {}'.format(err)) 
+      tracceback.print_exc() # 트레이스백 메세지 출력
+     print("[3] It's not possible to add integer and string together.")
+```
+ - 만약 동일한 블록문에서 여러 개의 에러가 발생할 가능성이 있다면 해당 에러들을 튜플에 넣어서 except 구문에 넣을 수 있음
+ - 어떤 에러가 발생할지 명확하지 않은 경우에는 에러명을 생략할 수도 있음
+
+```
+except (TypeError, NameError):
+except:
+```
+
+### else와 finally 사용하기
+ - 파이썬의 예외처리 방식에는 else라는 옵션 구문을 제공
+ - 예외 상황이 발생하면 except 구문을 실행하고, 발생하지 않으면 else 구문을 실행
+
+```python3
+>>> def exception_test_2(file_path):
+     try:
+      f = open(file_path, 'r')
+     except IOError:
+      print('cannot open', file_path)
+     else:
+      print('File has', len(f.readlines()), 'lines') # 파일 라인 수
+      f.close()
+     finally:
+      print('I just tried to read this file.', file_path)
+```
+ - 또 다른 예외처리 방식의 옵션 구문은 finally 구문
+ - 예외 상황이 발생하든 발생하지 않든 간에 반드시 실행이 되어야 하는 소스 코드를 finally 블록문에 위치
+ 
+### raise문과 사용자 정의 예외 
+ - 파이썬에서는 다양한 Builts-in Exception을 정의해 놓았지만 이러한 에러들은 대부분 일반적인 용도로 사용
+ - 의도적으로 본인이 만든 예외를 만들어야 한다면 예외 클래스를 새로 만들면 됨
+ 
+```python3
+class TooBigNumberError(Exception): # 예외 클래스 선언
+ def __init__(self, val): # 초기화 메소드 재정의
+  self.val = val # 인스턴스 변수 선언
+ def __str__(self): # 에러 메세지 함수 재정의
+  return 'too big number {}. Use 1~10!'.format(self.val)
+```
+ - 예외 클래스를 선언할 때, 인자값으로 반드시 'Exception'을 넣어야 함(상속)
+ - 예외 클래스의 실행은 일반 클래스와는 다름
+ - 예외 클래스의 실행을 위해 파이썬에서는 raise 구믄을 제공
+
+```python3
+>>> raise TooBigNumberError(15)
+Traceback (most recent call last):
+...
+...
+...
+TooBigNumberError: too big number 15. Use 1~10!
+```
