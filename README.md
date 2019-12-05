@@ -971,3 +971,56 @@ Traceback (most recent call last):
 ...
 TooBigNumberError: too big number 15. Use 1~10!
 ```
+
+### 단위 테스트 및 디버깅
+ - 개발한 소스 코드를 테스트하는 행위를 단위테스트라고 함
+ - 작성한 소스 코드를 확인하면서 문제가 생긴 코드를 고치는 행위를 디버깅이라고 함
+ 
+### 단위 테스트 수행
+ - common.py 생성
+ 
+```python3
+import re # re 모듈 탑재
+
+# 이메일 주소 정합성 체크를 위한 함수
+def email_validation_check(email):
+ # 이메일 정합성 검증 정규 표현식
+ regex = r'[\w.-]+@[\w.-]+.\w+'
+ 
+ # 이메일 주소 정합성 유무 확인
+ find_result = re.findall(regex, email)
+ 
+ # 에러 메세지 조건 및 출력
+ if find_result[0] != email:
+  print(email, '는 이메일 주소 형식에 맞지 않습니다.')
+  return False
+  
+ # 성공 메세지 출력
+ print(email, '는 이메일 주소로 적당합니다.')
+ return True
+```
+
+ - common_tests.py 생성
+```python3
+import unittest # unittest 모듈 탑재
+import common # 단위테스트 대상 모듈인 common 모듈 탑재
+
+
+class CommonTestCase(unittest.TestCase): # 단위테스트용 클래스, 인자 값 주의
+ def test_email_validation_check(self): # 단위테스트용 메소드
+  # 단위테스트 대상 함수 호출 (False 기대)
+  self.assertFalse(common.email_validation_check('#@#c#o@gmail*om'))
+
+  # 단위테스트 대상 함수 호출 (True 기대)
+  self.assertTrue(common.email_validation_check('mu0gum@naver.com'))
+```
+ - 5번째 줄에서 단위테스트를 하기 위한 클래스를 선언, 클래스 인자 값에 unittest.TestCase를 넣어서 TestCase를 상속받아야 함
+ - 8번째 줄에서 assertFalse() 함수를 호출, 이 함수는 인자값이 반드시 False 가 될 것이라는 뜻
+ - 위 테스트 케이스를 실행할 경우, 아래와 같은 메세지 출력
+```
+Test passed: 1 of 1 test - 0ms
+```
+ - 메소드를 2개로 늘리는 경우 테스트케이스가 2개로 증가
+ - unittest 모듈은 assertTrue()나 assertFalse() 이외에도 수많은 assert 계열의 함수를 제공(https://docs.python.org/3/library/unittest.html)
+
+
