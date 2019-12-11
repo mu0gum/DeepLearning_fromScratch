@@ -1076,4 +1076,59 @@ True
  - 첫 번째 줄의 파일 객체의 close() 메소드가 실행되면, 자동으로 flush()가 수행된 다음, 파일을 닫음
  - 파일을 연 상태에서 정상적으로 종료하지 않고 프로그램이 종료되는 경우 얘기치 못한 오류 상황을 볼 수도 있기 때문에 한 번 연 파일은 반드시 닫아야 함
  
+### with문을 활용한 파일의 데이터 읽어 오기
+ - 파이썬 설치 루트에 있는 LICENSE.txt 파일을 읽었을 때
+
+```python3
+>>> license_file = oepn('D:/Python3/LICENSE.txt', 'rt') # 파일 열기 & 객체 획득
+>>> license_file.readline() # 첫 번째 줄 읽기
+'A. HISTORY OF THE SOFTWARE\n'
+>>> license_file.readline() # 두 번째 줄 읽기
+'============================\n'
+```
+ - 동일한 메소드를 두 번 호출하니, 첫 번째 줄과 두 번째 줄이 출력되는 것을 확인할 수 있음
+ - 개행문자(\n)까지 확인 됨
+ - 파일을 끝까지 읽을 경우 더 이상 내용이 존재하지 않음. 처음부터 파일을 읽고 싶다면 seek() 메소드를 활용하면 됨
+
+```python3
+>>> f.seek(offset, from_what)
+```
+ - from_what은 숫자로 0은 파일의 시작 위치, 1은 현재 위치, 2는 파일의 끝 위치를 의미(기본값은 0)
+ - 첫 번째 인자 값은 from_what으로부터 몇 번째 바이트로 이동할지를 경정하는 오프셋
+
+```python3
+>>> license_file.seek(0, 0) # 파일 첫 라인으로 이동
+0
+>>> license_file.readline() # 현재 위치 내용 확인
+'A. HISTORY OF THE SOFTWARE\n'
+```
+ - 현재 파일의 위치를 알고 싶을 때는 tell() 메소드를 활용하면 됨
+
+```python3
+>>> license_file.tell() # 현재 파일 객체 바이트 위치 확인
+28
+>>> license_file.readline()
+'============================\n'
+>>> license_file.tell() # 현재 파일 객체 바이트 위치 확인
+58
+```
+ - 위처럼 바이트의 위치로 표시할 경우 초보 개발자가 소스 코드를 제어하는 것은 쉽지 않음 > 일단 파일 객체를 읽어서 리스트로 전환하여 사용하는 것을 추천
+
+```python3
+>>> license_list = list(license_file) # 파일 객체를 리스트로 타입 변환
+>>> license_list[:5] # 5번째 항목까지 값 확인
+```
+ - 만약 이렇게 리스트 형으로 활용할 생각이면 파일을 리스트 객체로 변환한 다음 바로 파일 객체를 닫아서 메모리 해제 대상이 되게끔 유도하는 것이 좋음
+ - 이런 방식을 지원하기 위해 with 예약어 제공
+ - **with로 선언을 하고 file의 open()메소드를 호출하면 close()까지 함게 실행**
+
+```python3
+>>> with oepn('D:/Python3/LICENSE.txt', 'r') as f: # with 절 선언
+     f_list = f.readlines() # 파일 -> 리스트 변환
+     
+>>> f.closed # f 종료 유무 확인
+True
+>>> f_list[0] # 리스트 첫 번째 항목 확인
+'A. HISTORY OF THE SOFTWARE\n'
+```
 
